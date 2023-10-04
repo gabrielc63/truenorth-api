@@ -11,13 +11,21 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum UserStatus {
+  active
+  inactive
+}
+
 model User {
-  id            String         @id @unique @default(uuid())
-  username      String         @unique
+  id            String          @id @unique @default(uuid())
+  username      String          @unique
   password      String
+  balance       Int             @default(2000)
   refreshTokens RefreshToken[]
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  records       Record[]
+  status        UserStatus      @default(active)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
 }
 
 model RefreshToken {
@@ -28,4 +36,38 @@ model RefreshToken {
   revoked     Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+enum OperationType {
+  ADDITION
+  SUBSTRACTION
+  MULTIPLICATION
+  DIVISION
+  SQUARE_ROOT
+  RANDOM_STRING
+}
+
+model Operation {
+  id        String         @id @unique @default(uuid())
+  type      OperationType
+  cost      Int
+  records   Record[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model Record {
+  id                String      @id @unique @default(uuid())
+  userId            String      @map("user_id")
+  user              User        @relation(fields: [userId], references: [id])
+  operationId       String      @map("product_id")
+  operation         Operation   @relation(fields: [operationId], references: [id])
+  amount            Int
+  userBalance       Int
+  operationResponse String
+  deleted           Boolean @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  @@index([userId])
+  @@index([operationId])
 }
