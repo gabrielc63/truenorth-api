@@ -14,9 +14,8 @@ async function main() {
       password: password,
     },
   });
-
-  console.log({ gabriel });
 }
+
 main()
   .then(async () => {
     await prisma.$disconnect();

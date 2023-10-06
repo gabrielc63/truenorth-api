@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { signinHandler } from "../../controllers/authController.js";
+import {
+  signinHandler,
+  refreshTokenHandler,
+} from "../../controllers/authController.js";
 
 const router = Router();
 
@@ -12,5 +15,6 @@ router.use((req, res, next) => {
 });
 
 router.post("/login", signinHandler);
+router.post("/refresh_token", refreshTokenHandler);
 
 export default router;
