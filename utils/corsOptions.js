@@ -1,4 +1,4 @@
-const allowedOrigins = ["https://www.yoursite.com", "http://localhost:3000"];
+const allowedOrigins = [process.env.FRONTEND_WEBSITE];
 
 const corsOptions = {
   origin: (origin, callback) => {
