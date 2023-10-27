@@ -1,6 +1,9 @@
 {
   "name": "truenorth-api",
   "version": "1.0.0",
+  "engines": {
+    "node": ">=18.16.0 <19.0.0"
+  },
   "prisma": {
     "seed": "node prisma/seed.js"
   },
