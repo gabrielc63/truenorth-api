@@ -1,20 +1,23 @@
 import request from "supertest";
-import express from "express";
-import jwt from "jsonwebtoken";
-// import authController from "../controllers/authController.js";
+import bcrypt from "bcrypt";
 import app from "../app.js";
-import { config } from "dotenv";
-import { PrismaClient } from "@prisma/client";
+import { db } from "../utils/db.js";
 
-describe("POST /login", () => {
+describe("Auth endpoints", () => {
   let testUser;
+  let userAccessToken;
 
   beforeAll(async () => {
-    const deleteUsers = await prisma.user.deleteMany({});
-    testUser = await prisma.user.create({
+    await db.record.deleteMany({});
+    await db.operation.deleteMany({});
+    await db.refreshToken.deleteMany({});
+    await db.user.deleteMany({});
+
+    const password = bcrypt.hashSync("password123", 12);
+    testUser = await db.user.create({
       data: {
         username: "testuser1",
-        password: "password123",
+        password: password,
       },
     });
   });
@@ -22,18 +25,30 @@ describe("POST /login", () => {
   it("should respond with a JWT token on successful login", async () => {
     const response = await request(app)
       .post("/api/v1/login")
-      .send({ username: testUser.username, password: testUser.password });
+      .send({ username: testUser.username, password: "password123" });
 
     expect(response.statusCode).toBe(200);
-    expect(response.body).toHaveProperty("token");
-
-    const decoded = jwt.verify(response.body.token, "your_jwt_secret_key");
-    expect(decoded.email).toBe("test@example.com");
+    expect(response.body).toHaveProperty("accessToken");
+    userAccessToken = response.body.accessToken;
   });
 
   it("should respond with an error if no credentials are provided", async () => {
-    const response = await request(app).post("/api/v1/login").send({});
+    const response = await request(app).post("/api/v1/operations").send({});
+    expect(response.statusCode).toBe(401);
+  });
 
-    expect(response.statusCode).toBe(400);
+  it("should respond with a result for an operation if credentials are provided", async () => {
+    const response = await request(app)
+      .post("/api/v1/operations")
+      .send({
+        value1: 1,
+        value2: 3,
+        operationType: "addition",
+      })
+      .set("Authorization", `Bearer ${userAccessToken}`);
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveProperty("result");
+    expect(response.body.result).toBe(4);
   });
 });

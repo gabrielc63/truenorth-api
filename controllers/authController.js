@@ -15,7 +15,7 @@ export const signinHandler = async (req, res, next) => {
     const { username, password } = req.body;
     if (!username || !password) {
       res.status(400);
-      throw new Error("You must provide an email and a password.");
+      throw new Error("You must provide an username and a password.");
     }
 
     const existingUser = await findUserByUsername(username);
