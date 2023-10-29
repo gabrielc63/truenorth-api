@@ -72,8 +72,25 @@ npm run dev
 - **Body:**
   ```json
   {
-    "username": "example_username",
-    "password": "example_password"
+    "username": "gabrielc",
+    "password": "abc123"
+  }
+  ```
+
+### Response
+
+- **Success Response (200 OK)**
+
+  - **Cookies:**
+
+    - `jwt`: `refresh_token`
+
+  - **Body:**
+
+  ```json
+  {
+    "accessToken": "new_access_token",
+    "userInfo": { "username": "username", "user_id": "user_id" }
   }
   ```
 
@@ -96,6 +113,10 @@ npm run dev
 
 - **Success Response (200 OK)**
 
+  - **Cookies:**
+
+    - `jwt`: `refresh_token`
+
   - **Body:**
 
   ```json
@@ -115,6 +136,7 @@ npm run dev
 - **Headers:**
 
   - `Content-Type`: `application/json`
+  - `Authorization`: `Bearer your_token_here`
 
 - **Body:**
   ```json
@@ -147,7 +169,7 @@ npm run dev
 
 - **Headers:**
 
-  - `Content-Type`: `application/json`
+  - `Authorization`: `Bearer your_token_here`
 
 ### Response
 
@@ -182,6 +204,7 @@ npm run dev
 - **Headers:**
 
   - `Content-Type`: `application/json`
+  - `Authorization`: `Bearer your_token_here`
 
 ### Response
 
